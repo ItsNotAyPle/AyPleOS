@@ -1,8 +1,10 @@
 #include "includes/screen.h"
 #include "includes/io.h"
+#include "includes/idt.h"
 
 
 void kernel_entry() {
+  init_idt();
   init_screen();
 
   outportb(PALETTE_MASK, 0xFF);

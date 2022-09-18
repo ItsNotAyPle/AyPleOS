@@ -55,11 +55,8 @@ static inline Pixel pixel(uint8 r, uint8 g, uint8 b) {
 }
 
 
-uint8* vga_buffer[SCREEN_SIZE];
-uint32 vga_index;
-
 void init_screen();
 void clear_screen(uint8 color);
-
+void plant_pixel(Pixel p);
 
 #endif
