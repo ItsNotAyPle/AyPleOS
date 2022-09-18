@@ -4,6 +4,10 @@
 #include "types.h"
 
 // https://github.com/lucianoforks/tetris-os/blob/master/src/util.h
+
+
+
+// sets memory to a value 
 static inline void memset(void *dst, uint8 value, size_t n) {
     uint8 *d = dst;
 
