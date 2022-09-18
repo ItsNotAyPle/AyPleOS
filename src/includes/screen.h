@@ -7,9 +7,10 @@ typedef unsigned int uint32;
 
 #define VGA_ADDRESS 0xB8000
 #define BUFSIZE 2200
+#define SCREEN_W 320
+#define SCREEN_H 200
+#define SCREEN_SIZE (SCREEN_W * SCREEN_H)
 
-uint16* vga_buffer;
-uint32 vga_index;
 
 enum vga_color {
     BLACK,
@@ -30,10 +31,27 @@ enum vga_color {
     WHITE,
 };
 
-// fc - fore color
-// bc - back color
-uint16 vga_entry(unsigned char ch, uint8 fc, uint8 bc);
-void clear_vga_buffer(uint16 **buffer, uint8 fc, uint8 bc);
-void init_vga(uint8 fc, uint8 bc);
+typedef struct Pixel {
+    uint8 r;
+    uint8 g;
+    uint8 b;
+};
+
+static inline Pixel pixel(uint8 r, uint8 g, uint8 b) {
+    Pixel p;
+    p.r = r;
+    p.g = g;
+    p.b = b;
+
+    return p;
+}
+
+
+uint8 vga_buffer[SCREEN_SIZE];
+uint32 vga_index;
+
+void init_screen();
+void clear_screen(uint16 **buffer, uint8 color);
+
 
 #endif

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "screen.h": "c",
+        "*.tcc": "c",
+        "memory_resource": "c",
+        "memory": "c",
+        "fstream": "c",
+        "istream": "c",
+        "ostream": "c",
+        "sstream": "c",
+        "streambuf": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}
