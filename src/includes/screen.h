@@ -61,6 +61,8 @@ static inline Pixel pixel(uint8 r, uint8 g, uint8 b) {
 }
 
 // https://stackoverflow.com/questions/53776878/drawing-pixels-in-c-osdev
+// need to test
+// plots a pixel at a 'x' and 'y' coordinate
 static inline void plot_pixel(uint8 x, uint8 y, uint8 color) 
 {
     uint32 where = x*SCREEN_W + y*SCREEN_H;
