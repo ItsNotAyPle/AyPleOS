@@ -10,5 +10,10 @@ typedef uint32 size_t;
 #define TRUE 1
 #define FALSE 0
 
+#define PACKED __attribute__((packed))
+
+#ifndef asm
+#define asm __asm__ volatile
+#endif
 
 #endif

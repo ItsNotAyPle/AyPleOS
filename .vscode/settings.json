@@ -8,7 +8,9 @@
         "istream": "c",
         "ostream": "c",
         "sstream": "c",
-        "streambuf": "c"
+        "streambuf": "c",
+        "types.h": "c",
+        "io.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

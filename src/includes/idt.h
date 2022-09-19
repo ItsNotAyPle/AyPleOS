@@ -1,8 +1,13 @@
 /*
 
-guide: https://www.youtube.com/watch?v=NqSE_aVCJXg&t=6897s
+guides: 
+* https://www.youtube.com/watch?v=NqSE_aVCJXg&t=6897s
+* https://github.com/lucianoforks/tetris-os/blob/master/src/idt.c
 
 IDT - Interrupt Descriptor Table
+
+Notes:
+* Need to double check everything
 
 */
 
@@ -15,25 +20,21 @@ IDT - Interrupt Descriptor Table
 #define INT_GATE_FLAGS 0x8E // p = 1, DPL = 00, S = 0, Type = 1110 (32bit interrupt gate)
 #define INT_GATE_USER_FLAGS 0xEE // p = 1, DPL = 11, S = 0, Type = 1110 (32bit interrupt gate, called from PL 3)
 
-typedef struct {
+struct IDTEntry32 {
     uint16 isr_address_low;     // lower 16 bits of isr addr
     uint16 kernel_cs;           // code segment for this ISR
     uint8  reserved;            // Set to 0, reserved by Intel
     uint8  attributes;          // Type and attributes; Flags
     uint16 isr_address_high;    // upper 16 bits of isr addr
-} __attribute__ ((packed)) idt_entry_32;
+} PACKED;
 
 // 2 byte limit
 // 4 byte base
 // IDTR layout
-typedef struct {
+struct IDTPointer32 {
     uint16 limit;
     uint32 base;
-} __attribute__ ((packed)) idtr_32;
-
-
-idt_entry_32 idt32[256]; // actual IDT
-idtr_32 idtr32;          // IDT register instance
+} PACKED;
 
 
 // interrupt frame to pass interrupt handlers/ISRs
@@ -43,22 +44,27 @@ typedef struct {
     uint32 eflags;
     uint32 sp;
     uint32 ss;
-} __attribute__ ((packed)) int_frame_32;
+} PACKED INTframe32;
+
+static struct {
+    struct IDTEntry entries[256];
+    struct IDTPointer pointer;
+} idt32;
 
 // Default exception handler (no error code)
-__attribute__((interrupt)) void default_exception_handler(int_frame_32 *frame) 
+__attribute__((interrupt)) void default_exception_handler(INTframe32 *frame) 
 {
 
 }
 
 // Default exception handler (includes error code)
-__attribute__((interrupt)) void default_exception_handler_err_code(int_frame_32 *frame, uint32 error_code) 
+__attribute__((interrupt)) void default_exception_handler_err_code(INTframe32 *frame, uint32 error_code) 
 {
 
 } 
 
 // Default interrupt handler
-__attribute__((interrupt)) void default_interrupt_handler(int_frame_32 *frame) 
+__attribute__((interrupt)) void default_interrupt_handler(INTframe32 *frame) 
 {
 
 }
@@ -66,13 +72,13 @@ __attribute__((interrupt)) void default_interrupt_handler(int_frame_32 *frame)
 // Add an ISR to the IDT
 void set_idt_descriptor_32(uint8 entry_number, void *isr, uint8 flags) 
 {
-    idt_entry_32 *descriptor = &idt32[entry_number];
-    descriptor->isr_address_low = (uint32)isr & 0xFFFF;
-    descriptor->kernel_cs = 0x08; // look into this
-    descriptor->reserved = 0; 
-    descriptor->attributes = flags;
-    descriptor->isr_address_high = ((uint32)isr >> 16) & 0xFFFF;
-    
+    idt32.entries[entry_number] = (struct IDTEntry) {
+        .isr_address_low = (uint32)isr & 0xFFFF;
+        .kernel_cs = 0x08; // look into this
+        .reserved = 0; 
+        .attributes = flags;
+        .isr_address_high = ((uint32)isr >> 16) & 0xFFFF;
+    }
 }
 
 void init_idt() 
